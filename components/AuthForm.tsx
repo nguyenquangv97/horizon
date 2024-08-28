@@ -1,18 +1,17 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+import { signIn, signUp } from '@/lib/actions/user.actions';
 import { authFormSchema } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import CustomInput from './CustomInput';
-import { useRouter } from 'next/navigation';
-import { signUp } from '@/lib/actions/user.actions';
-import SignIn from '@/app/(auth)/sign-in/page';
 
 const AuthForm = ({ type }: { type: string }) => {
   const router = useRouter();
@@ -38,10 +37,12 @@ const AuthForm = ({ type }: { type: string }) => {
         setUser(newUser);
       }
       if (type === 'sign-in') {
-        const response = await SignIn({email: data.email, password: data.password});
-        if(response){
-          router.push('/');
-        }
+        const response = await signIn({
+          email: data.email,
+          password: data.password,
+        });
+
+        if (response) router.push('/');
       }
     } catch (error) {
       console.error(error);
@@ -103,12 +104,6 @@ const AuthForm = ({ type }: { type: string }) => {
                     name="address1"
                     label="Address"
                     placeholder="Enter your specific address"
-                  />
-                  <CustomInput
-                    control={form.control}
-                    name="city"
-                    label="City"
-                    placeholder="Enter your city"
                   />
                   <CustomInput
                     control={form.control}
